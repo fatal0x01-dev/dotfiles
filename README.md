@@ -23,9 +23,10 @@ Everything is driven by one script and is safe to re-run.
 ## Usage
 
 ```bash
-cd dotfiles
+git clone <this-repo> macos-kde-dotfiles
+cd macos-kde-dotfiles
 chmod +x install.sh scripts/*.sh
-./install.sh --conky
+./install.sh
 ```
 
 Then **log out and back in** (or reboot) so SDDM, the global menu and GTK apps pick everything up cleanly.
@@ -38,6 +39,8 @@ Then **log out and back in** (or reboot) so SDDM, the global menu and GTK apps p
 | `--light`   | Use the light variant (default)                                   |
 | `--no-aur`  | Skip AUR packages (SF Pro, Plank); use Inter + native dock        |
 | `--plank`   | Also install Plank (a magnifying dock) — **X11 sessions only**    |
+| `--conky`   | Also install the macOS-style Conky desktop widget                 |
+| `--kde-dock`| Keep the plain KDE dock instead of the macOS app dock             |
 
 ## What it does, stage by stage
 
@@ -48,6 +51,8 @@ Then **log out and back in** (or reboot) so SDDM, the global menu and GTK apps p
 | 02 | `02-fonts.sh`      | SF Pro via AUR, else Inter |
 | 03 | `03-themes.sh`     | Clone + build WhiteSur (kde/icon/cursor/gtk/wallpaper) from source |
 | 04 | `04-apply-theme.sh`| Apply look-and-feel, Kvantum, window buttons, fonts, GTK, SDDM |
+| 04b| `04b-macos-dock.sh`| Build the real macOS app dock — Apple icons (PuruVJ/macos-web, MIT) as launchers wired to Linux apps / web fallbacks. Skip with `--kde-dock` |
+| 04c| `04c-topbar-applets.sh`| Install the menu-bar app-name applet (dhruv8sh/plasma6-window-title-applet) so the top panel shows the focused app's name in bold |
 | 05 | `05-panels.sh`     | Build top bar + floating dock + wallpaper via Plasma scripting |
 | 06 | `06-plank.sh`      | *(optional)* Plank dock on X11 |
 

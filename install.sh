@@ -32,6 +32,7 @@ export WS_VARIANT="light"     # light | dark
 export WANT_AUR=1             # install AUR packages (fonts etc.)
 export WANT_PLANK=0           # install Plank dock (X11 only)
 export WANT_CONKY=0           # install the macOS-style Conky desktop widget
+export WANT_MACOS_DOCK=1      # build the real macOS app dock (Finder, Safari, …)
 
 for arg in "$@"; do
     case "$arg" in
@@ -40,6 +41,7 @@ for arg in "$@"; do
         --no-aur)  WANT_AUR=0 ;;
         --plank)   WANT_PLANK=1 ;;
         --conky)   WANT_CONKY=1 ;;
+        --kde-dock) WANT_MACOS_DOCK=0 ;;
         -h|--help) sed -n '2,24p' "$0"; exit 0 ;;
         *) die "Unknown option: $arg" ;;
     esac
@@ -63,6 +65,8 @@ run_stage "$SCRIPTS/01-packages.sh"        # pacman + AUR dependencies
 run_stage "$SCRIPTS/02-fonts.sh"           # SF Pro / Inter fallback
 run_stage "$SCRIPTS/03-themes.sh"          # clone + build WhiteSur (gtk/icon/cursor/kde/wallpaper)
 run_stage "$SCRIPTS/04-apply-theme.sh"     # look-and-feel, kvantum, window buttons, gtk, wallpaper
+[[ $WANT_MACOS_DOCK -eq 1 ]] && run_stage "$SCRIPTS/04b-macos-dock.sh"  # real macOS app dock
+run_stage "$SCRIPTS/04c-topbar-applets.sh" # macOS menu-bar app-name applet
 run_stage "$SCRIPTS/05-panels.sh"          # top menu bar + floating dock via plasma scripting
 [[ $WANT_PLANK -eq 1 ]] && run_stage "$SCRIPTS/06-plank.sh"   # optional Plank dock
 [[ $WANT_CONKY -eq 1 ]] && run_stage "$SCRIPTS/07-conky.sh"  # optional Conky widget

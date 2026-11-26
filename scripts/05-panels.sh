@@ -15,8 +15,16 @@ SRC="$DOTFILES_ROOT/plasma/layout.js"
 APPLY_DIR="$HOME/.local/share/macos-kde"
 mkdir -p "$APPLY_DIR"
 
-# --- Render the layout with the wallpaper path baked in --------------------
-sed "s|@WALLPAPER@|${WALLPAPER//|/\\|}|g" "$SRC" > "$APPLY_DIR/layout.js"
+# --- Resolve the pinned dock launchers (macOS lineup, or KDE fallback) ------
+DOCK_LAUNCHERS="$(state_get DOCK_LAUNCHERS)"
+if [[ -z "$DOCK_LAUNCHERS" ]]; then
+    DOCK_LAUNCHERS="applications:systemsettings.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop,applications:firefox.desktop"
+fi
+
+# --- Render the layout with wallpaper + dock launchers baked in ------------
+sed -e "s|@WALLPAPER@|${WALLPAPER//|/\\|}|g" \
+    -e "s|@DOCK_LAUNCHERS@|${DOCK_LAUNCHERS//|/\\|}|g" \
+    "$SRC" > "$APPLY_DIR/layout.js"
 
 # --- Write the self-contained applier (re-runnable any time) ---------------
 cat > "$APPLY_DIR/apply-layout.sh" <<'SH'

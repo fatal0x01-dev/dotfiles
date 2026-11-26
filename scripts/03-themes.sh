@@ -66,7 +66,9 @@ ok "GTK theme installed."
 # --- Stage a wallpaper (best-effort: copy the first one the repo ships) ----
 wall_dest="$HOME/.local/share/wallpapers/WhiteSur"
 mkdir -p "$wall_dest"
-wall_src="$(find "$BUILD_DIR/WhiteSur-wallpapers" -maxdepth 3 -type f \( -iname '*.jpg' -o -iname '*.png' \) 2>/dev/null | sort | head -1 || true)"
+# Prefer a Monterey wallpaper (the purple one in the reference look); else any.
+wall_src="$(find "$BUILD_DIR/WhiteSur-wallpapers" -maxdepth 3 -type f \( -iname '*monterey*' \) \( -iname '*.jpg' -o -iname '*.png' \) 2>/dev/null | sort | head -1 || true)"
+[[ -z "$wall_src" ]] && wall_src="$(find "$BUILD_DIR/WhiteSur-wallpapers" -maxdepth 3 -type f \( -iname '*.jpg' -o -iname '*.png' \) 2>/dev/null | sort | head -1 || true)"
 if [[ -n "$wall_src" ]]; then
     cp -f "$wall_src" "$wall_dest/wallpaper.${wall_src##*.}"
     state_set WALLPAPER "$wall_dest/wallpaper.${wall_src##*.}"
